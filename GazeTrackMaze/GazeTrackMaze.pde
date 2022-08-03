@@ -39,6 +39,12 @@ ArrayList<Rectangle> obstacles = new ArrayList<Rectangle>();
 SoundFile bgm_sound;
 SoundFile clear_sound;
 
+// 初期時間
+int start_time;
+
+// 経過時間
+float elapsed_time;
+
 // サウンドの初期化
 void setSound(){
   
@@ -453,6 +459,8 @@ void setup(){
   
   setCourse(stage);
   setSound();
+  
+  start_time = millis();
 }
 
 void draw(){
@@ -486,12 +494,16 @@ void draw(){
   rect(0, 0, screenWidth, screenHeight);
   
   // キャラクターの表示
-  //fill(#FFFF00);
-  //noStroke();
-  //circle(ball_x, ball_y, ball_radius*2);
   image(ufo, ball_x-ball_radius, ball_y-ball_radius, ball_radius*2, ball_radius*2);
-  //stroke(#0000ff);
-  //rect(ball_x-ball_radius, ball_y-ball_radius, ball_radius*2, ball_radius*2);
+
+  //経過時間の表示
+  noStroke();
+  fill(#0000ff);
+  rect(30, 80, 450, 100);
+  elapsed_time = (float)(millis() - start_time) / 1000;
+  textSize(64);
+  fill(#ffff00);
+  text("TIME:" + Float.toString(elapsed_time), 50, 150);
  
   // ボールの位置の更新  
   float x = start_x;
@@ -545,5 +557,6 @@ void draw(){
     delay(2000);
     setCourse(stage);
     setSound();
+    start_time = millis();
   }
 }
