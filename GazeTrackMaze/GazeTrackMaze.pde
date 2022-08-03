@@ -2,8 +2,11 @@ import processing.sound.*;
 import gazetrack.*;
 import java.awt.Rectangle;
 
-int TYPE_GAZE = 0;
-int TYPE_MOUSE = 1;
+int TYPE_GAZE = 0; // 視線でゲーム
+int TYPE_MOUSE = 1; // マウスでゲーム
+
+// ゲームタイプを選択
+int game_type = TYPE_MOUSE;
 
 // 視線検出
 GazeTrack gazeTrack;
@@ -21,11 +24,10 @@ int ball_x = start_x;
 int ball_y = start_y;
 
 // パラメータ
-int ball_radius = 40; // キャラクタの大きさ
-int speed = 20; // キャラクタの速度
+int ball_radius = 50; // キャラクタの大きさ
+int speed = 10; // キャラクタの速度
 int stage = 0; // ステージの初期値
 int max_stage = 4; // ステージの数
-int game_type = TYPE_MOUSE;
 
 // キャラクター
 PImage ufo;
@@ -38,7 +40,7 @@ SoundFile bgm_sound;
 SoundFile clear_sound;
 
 // サウンドの初期化
-void setSound(int stage){
+void setSound(){
   
   // 再生中なら停止
   if(bgm_sound != null){
@@ -450,7 +452,7 @@ void setup(){
   ufo = loadImage("img/ufo.png");
   
   setCourse(stage);
-  setSound(stage);
+  setSound();
 }
 
 void draw(){
@@ -517,15 +519,21 @@ void draw(){
   float diff_x = speed * cos(angle);
   float diff_y = speed * sin(angle);
   
-  // ボールの位置の更新
+  // X座標の更新
   int old_ball_x = ball_x;
-  int old_ball_y = ball_y;
   ball_x += diff_x;
-  ball_y += diff_y;
   
   // ボールが障害物に衝突したとき
   if(collide(ball_x-ball_radius, ball_y-ball_radius, ball_radius*2, ball_radius*2)){
     ball_x = old_ball_x;
+  }
+  
+  // Y座標の更新
+  int old_ball_y = ball_y;
+  ball_y += diff_y;
+  
+  // ボールが障害物に衝突したとき
+  if(collide(ball_x-ball_radius, ball_y-ball_radius, ball_radius*2, ball_radius*2)){
     ball_y = old_ball_y;
   }
  
@@ -536,6 +544,6 @@ void draw(){
     clear_sound.play();
     delay(2000);
     setCourse(stage);
-    setSound(stage);
+    setSound();
   }
 }
