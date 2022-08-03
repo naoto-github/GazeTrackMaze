@@ -2,33 +2,42 @@ import processing.sound.*;
 import gazetrack.*;
 import java.awt.Rectangle;
 
+int TYPE_GAZE = 0;
+int TYPE_MOUSE = 1;
+
+// 視線検出
 GazeTrack gazeTrack;
 
 // スクリーンのサイズ
 int screenWidth = 2256;
 int screenHeight = 1504;
 
+// 初期座標
 int start_x = screenWidth / 2;
 int start_y = screenHeight / 2;
 int goal_x = start_x + 100;
 int goal_y = start_y + 100;
-
 int ball_x = start_x;
 int ball_y = start_y;
-int ball_radius = 25;
-int speed = 10;
-float angle = 0;
 
-int stage = 0;
-int max_stage = 4;
+// パラメータ
+int ball_radius = 40; // キャラクタの大きさ
+int speed = 20; // キャラクタの速度
+int stage = 0; // ステージの初期値
+int max_stage = 4; // ステージの数
+int game_type = TYPE_MOUSE;
 
+// キャラクター
 PImage ufo;
 
+// 障害物
 ArrayList<Rectangle> obstacles = new ArrayList<Rectangle>();
 
+// サウンドファイル
 SoundFile bgm_sound;
 SoundFile clear_sound;
 
+// サウンドの初期化
 void setSound(int stage){
   
   // 再生中なら停止
@@ -36,19 +45,15 @@ void setSound(int stage){
     bgm_sound.stop();
   }
   
-  // BGMを再生
-  if(stage == 0){
-    bgm_sound = new SoundFile(this, "sound/bgm.mp3");
-    bgm_sound.loop();
-  }
-  else{
-    bgm_sound = new SoundFile(this, "sound/bgm.mp3");
-    bgm_sound.loop();
-  }
+  // BGM
+  bgm_sound = new SoundFile(this, "sound/bgm.mp3");
+  bgm_sound.loop();
   
+  // クリアの効果音
   clear_sound = new SoundFile(this, "sound/clear.mp3");
 }
 
+// コースの初期化
 void setCourse(int stage){
   
   obstacles.clear();
@@ -85,9 +90,9 @@ void setCourse(int stage){
     Rectangle obstacle24 = new Rectangle(1638, 1073, 1, 214);
     Rectangle obstacle25 = new Rectangle(1842, 431, 1, 214);
     Rectangle obstacle26 = new Rectangle(1842, 1289, 1, 214);
-    Rectangle obstacle27 = new Rectangle(210, 0, 2046, 3);
+    Rectangle obstacle27 = new Rectangle(210, 0, 2046, 1);
     Rectangle obstacle28 = new Rectangle(0, 217, 210, 1287);
-    Rectangle obstacle29 = new Rectangle(210, 1501, 1839, 3);
+    Rectangle obstacle29 = new Rectangle(210, 1501, 1839, 1);
     Rectangle obstacle30 = new Rectangle(2046, 3, 210, 1284);
     obstacles.add(obstacle4);
     obstacles.add(obstacle5);
@@ -221,7 +226,8 @@ void setCourse(int stage){
     
   }
   else if(stage == 3){
-    // 久保担当
+    
+    // 久保
     
     start_x = 75;
     start_y = 62;
@@ -406,20 +412,27 @@ void setCourse(int stage){
   ball_y = start_y;
 }
 
-boolean inside(int x, int y, int width, int height){
+
+boolean collide(int x, int y, int w, int h){
+  
+  Rectangle target = new Rectangle(x, y, w, h);
+  
   for(int i=0; i<obstacles.size(); i++){
     Rectangle obstacle = obstacles.get(i);
-    if(obstacle.intersects(x, y, width, height)){
+    if(obstacle.intersects(target)){
       return true;
     }
   }
+  
   return false;
+    
 }
 
+// ゴールの到達判定
 boolean reachGoal(int x, int y){
   
   float d = dist(x, y, goal_x, goal_y);
-  if(d < ball_radius * 3){
+  if(d < ball_radius * 1.5){
     return true;
   }
   else{
@@ -430,7 +443,9 @@ boolean reachGoal(int x, int y){
 void setup(){
   fullScreen();
   
-  gazeTrack = new GazeTrack(this);
+  if(game_type == TYPE_GAZE){
+    gazeTrack = new GazeTrack(this);
+  }
   
   ufo = loadImage("img/ufo.png");
   
@@ -451,7 +466,7 @@ void draw(){
   // ゴール
   fill(#FF0000);
   noStroke();
-  circle(goal_x, goal_y, ball_radius * 4);
+  circle(goal_x, goal_y, ball_radius * 2);
   
   // 障害物
   for(int i=0; i<obstacles.size(); i++){
@@ -468,43 +483,53 @@ void draw(){
   strokeWeight(10);
   rect(0, 0, screenWidth, screenHeight);
   
-  // ボールの表示
+  // キャラクターの表示
   //fill(#FFFF00);
   //noStroke();
   //circle(ball_x, ball_y, ball_radius*2);
-  image(ufo, ball_x-ball_radius*2, ball_y-ball_radius*2, ball_radius*4, ball_radius*4);
+  image(ufo, ball_x-ball_radius, ball_y-ball_radius, ball_radius*2, ball_radius*2);
+  //stroke(#0000ff);
+  //rect(ball_x-ball_radius, ball_y-ball_radius, ball_radius*2, ball_radius*2);
  
-  // ボールの位置の更新
-  if(gazeTrack.gazePresent()){
-    
-    float x = gazeTrack.getGazeX();
-    float y = gazeTrack.getGazeY();
-    
-    // 注視点の表示
-    fill(#FFFFFF);
-    circle(x, y, 30);
-    
-    // println("X:" + x + " Y:" + y);
-    
-    // 注視点とボールの角度
-    angle = atan2(y - ball_y, x - ball_x);
-    float diff_x = speed * cos(angle);
-    float diff_y = speed * sin(angle);
-    
-    // ボールの位置の更新
-    int old_ball_x = ball_x;
-    int old_ball_y = ball_y;
-    ball_x += diff_x;
-    ball_y += diff_y;
-    
-    // ボールが障害物に含まれるとき
-    if(inside(ball_x - ball_radius, ball_y - ball_radius, ball_radius*2, ball_radius*2)){
-      ball_x = old_ball_x;
-      ball_y = old_ball_y;
+  // ボールの位置の更新  
+  float x = start_x;
+  float y = start_y;
+  if(game_type == TYPE_GAZE){
+    if(gazeTrack.gazePresent()){
+      x = gazeTrack.getGazeX();
+      y = gazeTrack.getGazeY();
     }
-    
-  } 
+  }
+  else if(game_type == TYPE_MOUSE){
+    x = mouseX;
+    y = mouseY;
+  }
   
+  // 注視点の表示
+  fill(#FFFFFF);
+  noStroke();
+  circle(x, y, 30);
+  
+  // println("X:" + x + " Y:" + y);
+  
+  // 注視点とボールの角度
+  float angle = atan2(y - ball_y, x - ball_x);
+  float diff_x = speed * cos(angle);
+  float diff_y = speed * sin(angle);
+  
+  // ボールの位置の更新
+  int old_ball_x = ball_x;
+  int old_ball_y = ball_y;
+  ball_x += diff_x;
+  ball_y += diff_y;
+  
+  // ボールが障害物に衝突したとき
+  if(collide(ball_x-ball_radius, ball_y-ball_radius, ball_radius*2, ball_radius*2)){
+    ball_x = old_ball_x;
+    ball_y = old_ball_y;
+  }
+ 
+  // ボールがゴールに到達したとき
   if(reachGoal(ball_x, ball_y)){
     stage = (stage + 1) % max_stage;
     bgm_sound.stop();
