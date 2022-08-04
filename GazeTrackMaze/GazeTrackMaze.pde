@@ -29,8 +29,11 @@ int speed = 10; // キャラクタの速度
 int stage = 0; // ステージの初期値
 int max_stage = 4; // ステージの数
 
-// キャラクター
+// UFO
 PImage ufo;
+
+// 地球
+PImage earth;
 
 // 障害物
 ArrayList<Rectangle> obstacles = new ArrayList<Rectangle>();
@@ -376,8 +379,11 @@ void setCourse(int stage){
     
     start_x = 300;
     start_y = 100;
-    goal_x = 2000;
-    goal_y = 250;
+    //goal_x = 2000;
+    //goal_y = 250;
+    
+    goal_x = 200;
+    goal_y = 400;
     
     Rectangle obstacle1 = new Rectangle(250, 250, 250, 1);
     Rectangle obstacle2 = new Rectangle(250, 700, 500, 1);
@@ -456,6 +462,7 @@ void setup(){
   }
   
   ufo = loadImage("img/ufo.png");
+  earth = loadImage("img/earth.png");
   
   setCourse(stage);
   setSound();
@@ -474,9 +481,10 @@ void draw(){
   rect(0, 0, screenWidth, screenHeight);
   
   // ゴール
-  fill(#FF0000);
-  noStroke();
-  circle(goal_x, goal_y, ball_radius * 2);
+  //fill(#FF0000);
+  //noStroke();
+  //circle(goal_x, goal_y, ball_radius * 2);
+  image(earth, goal_x-ball_radius, goal_y-ball_radius, ball_radius*2, ball_radius*2);
   
   // 障害物
   for(int i=0; i<obstacles.size(); i++){
