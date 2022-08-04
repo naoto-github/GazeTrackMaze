@@ -69,10 +69,53 @@ void setCourse(int stage){
   
   obstacles.clear();
   
-  if(stage == 1){
+  if(stage == 0){
+    
+    //鈴木
+    start_x = 300;
+    start_y = 100;
+    goal_x = 2000;
+    goal_y = 250;
+    
+    Rectangle obstacle1 = new Rectangle(250, 250, 250, 1);
+    Rectangle obstacle2 = new Rectangle(250, 700, 500, 1);
+    Rectangle obstacle3 = new Rectangle(350, 1160, 650, 1);
+    Rectangle obstacle4 = new Rectangle(500, 0, 1, 700);
+    Rectangle obstacle5 = new Rectangle(750, 1160, 1, 370);
+    Rectangle obstacle6 = new Rectangle(1000, 760, 1, 400);
+    Rectangle obstacle7 = new Rectangle(850, 0, 1, 250);
+    Rectangle obstacle8 = new Rectangle(850, 250, 500, 1);
+    Rectangle obstacle9 = new Rectangle(1250, 250, 1, 500);
+    Rectangle obstacle10 = new Rectangle(1450, 1150, 550, 1);
+    Rectangle obstacle11 = new Rectangle(1250, 500, 200, 1);
+    Rectangle obstacle12 = new Rectangle(1700, 0, 1, 1150);
+    Rectangle obstacle13 = new Rectangle(1700, 450, 300, 1);
+    Rectangle obstacle14 = new Rectangle(2000, 200, 1, 250);
+    Rectangle obstacle60 = new Rectangle( 0, 0, 1, 1504);
+    Rectangle obstacle61 = new Rectangle(0,0,2256,1);
+    Rectangle obstacle62 = new Rectangle(2256,0,1,1504);
+    Rectangle obstacle63 = new Rectangle(0,1504,2256,1);
+    obstacles.add(obstacle1);
+    obstacles.add(obstacle2);
+    obstacles.add(obstacle3);
+    obstacles.add(obstacle4);
+    obstacles.add(obstacle5);
+    obstacles.add(obstacle6);
+    obstacles.add(obstacle7);
+    obstacles.add(obstacle8);
+    obstacles.add(obstacle9);
+    obstacles.add(obstacle10);
+    obstacles.add(obstacle11);
+    obstacles.add(obstacle12);
+    obstacles.add(obstacle13); 
+    obstacles.add(obstacle60);
+    obstacles.add(obstacle61);
+    obstacles.add(obstacle62);
+    obstacles.add(obstacle63);
+  }  
+  else if(stage == 1){
     
     // 滝本
-    
     start_x = 100;
     start_y = 100;
     goal_x = 2150;
@@ -136,7 +179,6 @@ void setCourse(int stage){
   else if(stage == 2){
     
     // 松岡
-    
     start_x = 100;
     start_y = 1400;
     goal_x = 2150;
@@ -239,7 +281,6 @@ void setCourse(int stage){
   else if(stage == 3){
     
     // 久保
-    
     start_x = 75;
     start_y = 62;
     goal_x = 2175;
@@ -373,57 +414,12 @@ void setCourse(int stage){
     obstacles.add(obstacle62);
     obstacles.add(obstacle63);
   }
-  else if(stage == 0){
-    
-    //鈴木
-    
-    start_x = 300;
-    start_y = 100;
-    goal_x = 2000;
-    goal_y = 250;
-    
-    Rectangle obstacle1 = new Rectangle(250, 250, 250, 1);
-    Rectangle obstacle2 = new Rectangle(250, 700, 500, 1);
-    Rectangle obstacle3 = new Rectangle(350, 1160, 650, 1);
-    Rectangle obstacle4 = new Rectangle(500, 0, 1, 700);
-    Rectangle obstacle5 = new Rectangle(750, 1160, 1, 370);
-    Rectangle obstacle6 = new Rectangle(1000, 760, 1, 400);
-    Rectangle obstacle7 = new Rectangle(850, 0, 1, 250);
-    Rectangle obstacle8 = new Rectangle(850, 250, 500, 1);
-    Rectangle obstacle9 = new Rectangle(1250, 250, 1, 500);
-    Rectangle obstacle10 = new Rectangle(1450, 1150, 550, 1);
-    Rectangle obstacle11 = new Rectangle(1250, 500, 200, 1);
-    Rectangle obstacle12 = new Rectangle(1700, 0, 1, 1150);
-    Rectangle obstacle13 = new Rectangle(1700, 450, 300, 1);
-    Rectangle obstacle14 = new Rectangle(2000, 200, 1, 250);
-    Rectangle obstacle60 = new Rectangle( 0, 0, 1, 1504);
-    Rectangle obstacle61 = new Rectangle(0,0,2256,1);
-    Rectangle obstacle62 = new Rectangle(2256,0,1,1504);
-    Rectangle obstacle63 = new Rectangle(0,1504,2256,1);
-    obstacles.add(obstacle1);
-    obstacles.add(obstacle2);
-    obstacles.add(obstacle3);
-    obstacles.add(obstacle4);
-    obstacles.add(obstacle5);
-    obstacles.add(obstacle6);
-    obstacles.add(obstacle7);
-    obstacles.add(obstacle8);
-    obstacles.add(obstacle9);
-    obstacles.add(obstacle10);
-    obstacles.add(obstacle11);
-    obstacles.add(obstacle12);
-    obstacles.add(obstacle13); 
-    obstacles.add(obstacle60);
-    obstacles.add(obstacle61);
-    obstacles.add(obstacle62);
-    obstacles.add(obstacle63);
-  }
   
   ball_x = start_x;
   ball_y = start_y;
 }
 
-
+// 衝突判定
 boolean collide(int x, int y, int w, int h){
   
   Rectangle target = new Rectangle(x, y, w, h);
@@ -451,6 +447,7 @@ boolean reachGoal(int x, int y){
   }
 }
 
+// 初期化
 void setup(){
   fullScreen();
   
@@ -467,6 +464,7 @@ void setup(){
   start_time = millis();
 }
 
+// 描画
 void draw(){
   
   // 背景色
@@ -476,9 +474,6 @@ void draw(){
   fill(#000000);
   stroke(#00FF00);
   rect(0, 0, screenWidth, screenHeight);
-  
-  // ゴール
-  image(earth, goal_x-ball_radius, goal_y-ball_radius, ball_radius*2, ball_radius*2);
   
   // 障害物
   for(int i=0; i<obstacles.size(); i++){
@@ -498,6 +493,9 @@ void draw(){
   // キャラクターの表示
   image(ufo, ball_x-ball_radius, ball_y-ball_radius, ball_radius*2, ball_radius*2);
 
+  // ゴールの表示
+  image(earth, goal_x-ball_radius, goal_y-ball_radius, ball_radius*2, ball_radius*2);
+
   //経過時間の表示
   noStroke();
   fill(#0000ff);
@@ -510,6 +508,7 @@ void draw(){
   // ボールの位置の更新  
   float x = start_x;
   float y = start_y;
+  
   if(game_type == TYPE_GAZE){
     if(gazeTrack.gazePresent()){
       x = gazeTrack.getGazeX();
@@ -525,8 +524,6 @@ void draw(){
   fill(#FFFF00);
   noStroke();
   circle(x, y, 30);
-  
-  // println("X:" + x + " Y:" + y);
   
   // 注視点とボールの角度
   float angle = atan2(y - ball_y, x - ball_x);
