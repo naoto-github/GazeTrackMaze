@@ -379,11 +379,8 @@ void setCourse(int stage){
     
     start_x = 300;
     start_y = 100;
-    //goal_x = 2000;
-    //goal_y = 250;
-    
-    goal_x = 200;
-    goal_y = 400;
+    goal_x = 2000;
+    goal_y = 250;
     
     Rectangle obstacle1 = new Rectangle(250, 250, 250, 1);
     Rectangle obstacle2 = new Rectangle(250, 700, 500, 1);
@@ -481,9 +478,6 @@ void draw(){
   rect(0, 0, screenWidth, screenHeight);
   
   // ゴール
-  //fill(#FF0000);
-  //noStroke();
-  //circle(goal_x, goal_y, ball_radius * 2);
   image(earth, goal_x-ball_radius, goal_y-ball_radius, ball_radius*2, ball_radius*2);
   
   // 障害物
@@ -507,11 +501,11 @@ void draw(){
   //経過時間の表示
   noStroke();
   fill(#0000ff);
-  rect(30, 80, 450, 100);
+  rect(30, screenHeight-130, 450, 100);
   elapsed_time = (float)(millis() - start_time) / 1000;
   textSize(64);
   fill(#ffff00);
-  text("TIME:" + Float.toString(elapsed_time), 50, 150);
+  text("TIME:" + Float.toString(elapsed_time), 50, screenHeight-50);
  
   // ボールの位置の更新  
   float x = start_x;
@@ -528,7 +522,7 @@ void draw(){
   }
   
   // 注視点の表示
-  fill(#FFFFFF);
+  fill(#FFFF00);
   noStroke();
   circle(x, y, 30);
   
