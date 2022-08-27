@@ -6,7 +6,7 @@ int TYPE_GAZE = 0; // 視線でゲーム
 int TYPE_MOUSE = 1; // マウスでゲーム
 
 // ゲームタイプを選択
-int game_type = TYPE_MOUSE;
+int game_type = TYPE_GAZE;
 
 // 視線検出
 GazeTrack gazeTrack;
@@ -35,12 +35,19 @@ PImage ufo;
 // 地球
 PImage earth;
 
+// ゴール画面
+PImage goal;
+
+// ゲーム終了フラグ
+boolean finale_flg = false;
+
 // 障害物
 ArrayList<Rectangle> obstacles = new ArrayList<Rectangle>();
 
 // サウンドファイル
 SoundFile bgm_sound;
 SoundFile clear_sound;
+SoundFile finale_sound;
 
 // 初期時間
 int start_time;
@@ -62,6 +69,9 @@ void setSound(){
   
   // クリアの効果音
   clear_sound = new SoundFile(this, "sound/clear.mp3");
+  
+  // 全ステージクリアの効果音
+  finale_sound = new SoundFile(this, "sound/finale.mp3");
 }
 
 // コースの初期化
@@ -419,6 +429,7 @@ void setCourse(int stage){
   ball_y = start_y;
 }
 
+
 // 衝突判定
 boolean collide(int x, int y, int w, int h){
   
@@ -457,6 +468,7 @@ void setup(){
   
   ufo = loadImage("img/ufo.png");
   earth = loadImage("img/earth.png");
+  goal = loadImage("img/goal.png");
   
   setCourse(stage);
   setSound();
@@ -466,6 +478,19 @@ void setup(){
 
 // 描画
 void draw(){
+  
+  // ゲームクリアしたとき
+  if(stage >= max_stage){
+    bgm_sound.stop();
+    image(goal, 0, 0, width, height);
+    
+    if(finale_flg == false){
+      finale_sound.play();
+      finale_flg = true;
+    }
+    
+    return;
+  }
   
   // 背景色
   background(#797979);
@@ -550,12 +575,14 @@ void draw(){
  
   // ボールがゴールに到達したとき
   if(reachGoal(ball_x, ball_y)){
-    stage = (stage + 1) % max_stage;
+    //stage = (stage + 1) % max_stage;
+    stage = (stage + 1);
     bgm_sound.stop();
     clear_sound.play();
     delay(2000);
     setCourse(stage);
     setSound();
     start_time = millis();
+    
   }
 }
